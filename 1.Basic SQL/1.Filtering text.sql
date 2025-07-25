@@ -81,3 +81,26 @@ FROM people;
 SELECT (max(release_year)-min(release_year)) / 10.0 AS number_of_decades
 FROM films;
 
+-- 15
+-- Select name from people and sort alphabetically
+Select name
+From people
+Order by name asc
+
+-- 16
+-- Select the title and duration from longest to shortest film
+Select title, duration
+From films
+Order by duration DESC;
+
+-- 17
+-- Select the release year, duration, and title sorted by release year and duration
+Select release_year, duration, title
+From films
+Order by release_year,duration
+
+-- 18
+-- Select the certification, release year, and title sorted by certification and release year
+Select certification,release_year,title
+From films
+Order by certification asc, release_year desc;
