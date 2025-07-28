@@ -104,3 +104,41 @@ Order by release_year,duration
 Select certification,release_year,title
 From films
 Order by certification asc, release_year desc;
+
+-- 19
+-- Select the country and distinct count of certification as certification_count
+Select country,count(distinct certification) as certification_count
+From films
+-- Group by country
+Group by country
+-- Filter results to countries with more than 10 different certifications
+Having count(distinct certification) > 10
+
+-- 20
+-- Select the country and average_budget from films
+Select country, round(avg(budget),2) as average_budget
+From films
+-- Group by country
+Group by country
+
+-- 21
+-- Filter to countries with an average_budget of more than one billion
+Having avg(budget) > 1000000000
+-- Order by descending order of the aggregated budget
+Order by average_budget desc
+
+-- 22
+-- Select the release_year for films released after 1990 grouped by year
+Select release_year
+From films
+WHere release_year > 1990
+Group by release_year
+
+-- 23
+SELECT release_year, AVG(budget) AS avg_budget, AVG(gross) AS avg_gross
+FROM films
+WHERE release_year > 1990
+GROUP BY release_year
+-- Modify the query to see only years with an avg_budget of more than 60 million
+Having avg(budget) > 60000000;
+
