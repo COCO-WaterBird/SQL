@@ -142,3 +142,19 @@ GROUP BY release_year
 -- Modify the query to see only years with an avg_budget of more than 60 million
 Having avg(budget) > 60000000;
 
+-- 24
+-- SELECT release_year, AVG(budget) AS avg_budget, AVG(gross) AS avg_gross
+SELECT release_year, AVG(budget) AS avg_budget, AVG(gross) AS avg_gross
+FROM films
+WHERE release_year > 1990
+GROUP BY release_year
+HAVING AVG(budget) > 60000000
+ORDER BY avg_gross DESC LIMIT 1
+
+-- 25
+-- Start coding here...
+Select stay, count(*) as count_int, round(avg(todep),2) as average_phq, round(avg(tosc),2) as average_scs, round(avg(toas),2) as average_as
+From students
+Where inter_dom = 'Inter'
+Group by stay
+Order by stay desc;
