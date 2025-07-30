@@ -14,3 +14,40 @@ Where genre <> 'Drama'; -- All genres except drama
 SELECT *
 FROM movies
 Where title in ('Showtime', 'Love Actually', 'The Fighter'); -- Select all movies with the given titles
+
+SELECT * -- Join renting with customers
+FROM renting as r
+LEFT JOIN customers as c
+ON r.customer_id = c.customer_id;
+
+SELECT a.name, -- Create a list of movie titles and actor names
+       m.title
+FROM actsin as ai
+LEFT JOIN movies AS m
+ON m.movie_id = ai.movie_id
+LEFT JOIN actors AS a
+ON a.actor_id = ai.actor_id;
+
+SELECT rm.title, -- Report the income from movie rentals for each movie
+       sum(rm.renting_price) AS income_movie
+FROM
+       (SELECT m.title,
+               m.renting_price
+       FROM renting AS r
+       LEFT JOIN movies AS m
+       ON r.movie_id=m.movie_id) AS rm
+Group by rm.title
+ORDER BY income_movie desc; -- Order the result by decreasing income
+
+SELECT m.title,
+COUNT(*),
+AVG(r.rating)
+FROM renting AS r
+LEFT JOIN customers AS c
+ON c.customer_id = r.customer_id
+LEFT JOIN movies AS m
+ON m.movie_id = r.movie_id
+WHERE c.date_of_birth BETWEEN '1970-01-01' AND '1979-12-31'
+GROUP BY m.title
+Having count(*) > 1 -- Remove movies with only one rental
+Order by max(rating); -- Order with highest rating first
