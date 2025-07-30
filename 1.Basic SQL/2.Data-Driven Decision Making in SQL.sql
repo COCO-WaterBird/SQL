@@ -51,3 +51,22 @@ WHERE c.date_of_birth BETWEEN '1970-01-01' AND '1979-12-31'
 GROUP BY m.title
 Having count(*) > 1 -- Remove movies with only one rental
 Order by max(rating); -- Order with highest rating first
+
+
+
+SELECT a.name,  c.gender,
+       COUNT(*) AS number_views,
+       AVG(r.rating) AS avg_rating
+FROM renting as r
+LEFT JOIN customers AS c
+ON r.customer_id = c.customer_id
+LEFT JOIN actsin as ai
+ON r.movie_id = ai.movie_id
+LEFT JOIN actors as a
+ON ai.actor_id = a.actor_id
+Where  c.country = 'Spain'-- Select only customers from Spain
+GROUP BY a.name, c.gender
+HAVING AVG(r.rating) IS NOT NULL
+  AND COUNT(*) > 5
+ORDER BY avg_rating DESC, number_views DESC;
+    
