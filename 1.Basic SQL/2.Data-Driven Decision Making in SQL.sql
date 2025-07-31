@@ -69,4 +69,53 @@ GROUP BY a.name, c.gender
 HAVING AVG(r.rating) IS NOT NULL
   AND COUNT(*) > 5
 ORDER BY avg_rating DESC, number_views DESC;
-    
+
+
+SELECT movie_id -- Select movie IDs with more than 5 views
+FROM renting
+Group by movie_id
+Having count(*) > 5
+
+
+SELECT *
+FROM movies
+Where movie_id in  -- Select movie IDs from the inner query
+	(SELECT movie_id
+	FROM renting
+	GROUP BY movie_id
+	HAVING COUNT(*) > 5)
+
+
+SELECT title -- Report the movie titles of all movies with average rating higher than the total average
+FROM movies
+WHERE movie_id in
+	(SELECT movie_id
+	 FROM renting
+     GROUP BY movie_id
+     HAVING AVG(rating) >
+		(SELECT AVG(rating)
+		 FROM renting));
+
+-- Select customers with less than 5 movie rentals
+SELECT *
+FROM customers as c
+WHERE 5 >
+	(SELECT count(*)
+	FROM renting as r
+	WHERE r.customer_id = c.customer_id);
+
+SELECT *
+FROM customers AS c
+WHERE 4 > -- Select all customers with a minimum rating smaller than 4
+	(SELECT MIN(rating)
+	FROM renting AS r
+	WHERE r.customer_id = c.customer_id);
+
+
+SELECT *
+FROM movies as m
+WHERE 5 < (
+    SELECT COUNT(rating)
+    FROM renting as r
+    Where r.movie_id = m.movie_id
+);
