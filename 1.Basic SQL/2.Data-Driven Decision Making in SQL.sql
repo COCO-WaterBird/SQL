@@ -119,3 +119,79 @@ WHERE 5 < (
     FROM renting as r
     Where r.movie_id = m.movie_id
 );
+
+
+SELECT *
+FROM customers as c -- Select all customers with at least one rating
+WHERE exists
+	(SELECT *
+	FROM renting AS r
+	WHERE rating IS NOT NULL
+	AND r.customer_id = c.customer_id);
+
+SELECT *
+FROM actsin AS ai
+LEFT JOIN movies AS m
+ON m.movie_id = ai.movie_id
+WHERE m.genre = 'Comedy'
+And ai.actor_id = 1; -- Select only the actor with ID 1
+
+
+SELECT *
+FROM actors as a
+WHERE exists
+	(SELECT *
+	 FROM actsin AS ai
+	 LEFT JOIN movies AS m
+	 ON m.movie_id = ai.movie_id
+	 WHERE m.genre = 'Comedy'
+	  AND ai.actor_id = a.actor_id);
+
+
+SELECT a.nationality, count(*) -- Report the nationality and the number of actors for each nationality
+FROM actors AS a
+WHERE EXISTS
+	(SELECT ai.actor_id
+	 FROM actsin AS ai
+	 LEFT JOIN movies AS m
+	 ON m.movie_id = ai.movie_id
+	 WHERE m.genre = 'Comedy'
+	 AND ai.actor_id = a.actor_id)
+Group by a.nationality;
+
+
+SELECT name,nationality,year_of_birth -- Report the name, nationality and the year of birth
+FROM actors
+Where nationality != 'USA'; -- Of all actors who are not from the USA
+
+SELECT name,
+       nationality,
+       year_of_birth
+FROM actors
+WHERE nationality <> 'USA'
+Intersect -- Select all actors who are not from the USA and who are also born after 1990
+SELECT name,
+       nationality,
+       year_of_birth
+FROM actors
+WHERE year_of_birth > 1990;
+
+
+SELECT *
+FROM movies
+WHERE genre = 'Drama'
+  AND movie_id IN (
+    SELECT movie_id
+    FROM renting
+    GROUP BY movie_id
+    HAVING AVG(rating) > 9
+  );
+
+
+SELECT count(*),
+       genre,
+       year_of_release
+FROM movies
+Group BY cube(genre, year_of_release)
+ORDER BY year_of_release;
+
