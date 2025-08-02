@@ -195,3 +195,49 @@ FROM movies
 Group BY cube(genre, year_of_release)
 ORDER BY year_of_release;
 
+-- Augment the records of movie rentals with information about movies and customers
+SELECT *
+FROM renting as r
+LEFT JOIN customers as c
+ON r.customer_id = c.customer_id
+LEFT JOIN movies as m
+ON r.movie_id = m.movie_id;
+
+-- Calculate the average rating for each country
+SELECT
+	avg(r.rating),
+    country
+FROM renting AS r
+LEFT JOIN movies AS m
+ON m.movie_id = r.movie_id
+LEFT JOIN customers AS c
+ON r.customer_id = c.customer_id
+Group by country;
+
+-- Count the total number of customers, the number of customers for each country, and the number of female and male customers for each country
+SELECT country,
+       gender,
+	   COUNT(*)
+FROM customers
+Group by rollup (country, gender)
+Order by country, gender; -- Order the result by country and gender
+
+-- Join the tables
+SELECT *
+FROM renting AS r
+Left join movies AS m
+ON r.movie_id = m.movie_id
+Left join customers AS c
+ON r.customer_id = c.customer_id;
+
+
+SELECT
+	country, -- Select country, gender and rating
+    gender,
+    rating
+FROM renting AS r
+Left join customers AS c -- Use the correct join
+On r.customer_id = c.customer_id;
+
+
+
