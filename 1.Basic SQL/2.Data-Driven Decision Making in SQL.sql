@@ -239,5 +239,15 @@ FROM renting AS r
 Left join customers AS c -- Use the correct join
 On r.customer_id = c.customer_id;
 
+SELECT
+	c.country,
+    c.gender,
+	avg(r.rating) -- Calculate average rating
+FROM renting AS r
+LEFT JOIN customers AS c
+ON r.customer_id = c.customer_id
+Group by country,gender -- Order and group by country and gender
+ORDER BY country,gender;
+
 
 
