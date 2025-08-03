@@ -250,4 +250,12 @@ Group by country,gender -- Order and group by country and gender
 ORDER BY country,gender;
 
 
+-- Join the tables
+SELECT *
+FROM renting AS r
+LEFT JOIN actsin AS ai
+On r.movie_id = ai.movie_id
+LEFT JOIN actors AS a
+On ai.actor_id = a.actor_id;
+
 
