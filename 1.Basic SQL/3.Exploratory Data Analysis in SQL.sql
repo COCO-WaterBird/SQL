@@ -51,3 +51,11 @@ SELECT '3.2'::numeric,
        '1e-3'::numeric,
        '02314'::numeric,
        '0002'::numeric;
+
+
+-- Select the count of each revenues_change integer value
+SELECT revenues_change::integer, count(*)
+  FROM fortune500
+Group by  revenues_change::integer
+ -- order by the values of revenues_change
+ ORDER BY revenues_change;
