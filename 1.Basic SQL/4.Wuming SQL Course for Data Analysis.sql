@@ -1,3 +1,22 @@
+
+CREATE DATABASE chapter02;
+-- 查看创建的数据库
+show CREATE DATABASE chapter02;
+
+-- 指定数据库
+use chapter02;
+-- 查询使用的是哪个数据库
+select DATABASE();
+-- 查询数据库中有哪些表
+show TABLES;
+
+use mysql;
+select DATABASE();
+show TABLES;
+
+-- 删除数据库
+DROP DATABASE chapter03;
+
 create DATABASE chapter03;
 
 use chapter03;
@@ -232,3 +251,47 @@ insert INTO Employee(Name,JobPosition,DeptID) VALUES
 alter  table Employee rename to Employees
 -- 修改字段名称
 alter table employees change column JoinedAt HireDate Datetime; #更改后的名称及类型
+
+DESC employees;
+
+-- 修改字段数据类型和约束
+alter table employees modify column Name VARCHAR(30);
+-- 添加字段
+alter table employees add column birthday DATE;
+-- 删除字段
+alter table employees drop COLUMN birthday;
+-- 删除主键
+alter table employees drop PRIMARY key;
+-- 去除auto_increment限制
+alter table employees MODIFY COLUMN employeeID Int;
+-- 添加主键
+alter table employees add primary key (EmployeeID);
+-- 重新添加auto_increment
+alter table employees modify column employeeID int auto_increment;#auto_increment 这个影响的字段必须是主键
+
+-- 删除外键
+alter table Employees drop foreign key employees_ibfk_1;
+
+-- 添加外键 : 右键,设计表,查看外键
+alter table employees add FOREIGN key(DeptID) REFERENCES Department(DeptID);
+
+-- 方法二:如何查看外键
+show create table employees;
+CREATE TABLE `employees` (
+  `employeeID` int NOT NULL AUTO_INCREMENT,
+  `Name` varchar(30) DEFAULT NULL,
+  `Gender` enum('男','女') DEFAULT NULL,
+  `Age` int unsigned DEFAULT NULL,
+  `JobPosition` enum('业务经理','开发人员','顾问') NOT NULL,
+  `Salary` decimal(10,2) NOT NULL DEFAULT '0.00',
+  `HireDate` datetime DEFAULT NULL,
+  `Address` text,
+  `DeptID` int NOT NULL,
+  `birthday` date DEFAULT NULL,
+  PRIMARY KEY (`employeeID`),
+  KEY `DeptID` (`DeptID`),
+  CONSTRAINT `employees_ibfk_1` FOREIGN KEY (`DeptID`) REFERENCES `Department` (`DeptID`) #外键在这里
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+
+
+第四章 SQL操作数据

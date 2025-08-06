@@ -68,3 +68,12 @@ SELECT sector,
  GROUP BY sector
  -- Use the column alias to order the results
  ORDER BY avg_rev_employee;
+
+-- Divide unanswered_count by question_count
+SELECT unanswered_count/question_count::numeric AS computed_pct,
+       -- What are you comparing the above quantity to?
+       unanswered_pct
+  FROM stackoverflow
+ -- Select rows where question_count is not 0
+ WHERE question_count is not null
+ Limit 10;
