@@ -228,3 +228,7 @@ insert INTO Employee(Name,JobPosition,DeptID) VALUES
 
 -- 二,SQL修改表结构
 
+-- 修改表名称
+alter  table Employee rename to Employees
+-- 修改字段名称
+alter table employees change column JoinedAt HireDate Datetime; #更改后的名称及类型

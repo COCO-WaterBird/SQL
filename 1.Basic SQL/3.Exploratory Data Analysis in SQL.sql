@@ -59,3 +59,12 @@ SELECT revenues_change::integer, count(*)
 Group by  revenues_change::integer
  -- order by the values of revenues_change
  ORDER BY revenues_change;
+
+
+-- Select average revenue per employee by sector
+SELECT sector,
+       avg(revenues/employees::numeric) AS avg_rev_employee
+  FROM fortune500
+ GROUP BY sector
+ -- Use the column alias to order the results
+ ORDER BY avg_rev_employee;
