@@ -989,3 +989,282 @@ select Name,sign(salary - 25000) as sign from Employee order by sign desc;
 
 -- rand, 返回一个从0到1的随机值
 
+-- 查询全字段
+select * from chapter04.employee;
+-- 先指定数据库
+use chapter04;
+select * from Employee;
+
+select Name,Salary From Employee;
+select Employee.Name, Employee.salary From Employee;
+
+-- 为字段取名字
+Select Name as "姓名", Salary as "月薪" From Employee;
+
+-- 根据主键取某一条记录
+Select
+	EmployeeID as '工号',
+	Name as "姓名",
+	Age as '年龄',
+	Salary as '月薪'
+From employee
+WHERE employeeID = 10;
+
+-- 修改全部数据
+Update Employee SET Salary = Salary + 1000;
+
+-- 修改指定数据
+Update Employee Set salary = Salary + 1000,Age = Age + 10 WHere EmployeeID = 10;
+
+-- 删除全部数据
+delete from Employee;
+
+select * from Employee;
+-- 删除一条数据
+delete from employee Where EmployeeID = 10;
+
+-- 数据拼接(CONCAT(str1,str2,...) with Seperator
+select concat(Name,Gender,Age) From Employee;
+select concat(Name,',',Gender,',',Age) AS '员工基本信息' From Employee;
+select CONCAT_WS(',',Name,Gender,Age,JobPosition) AS '员工基本信息' From Employee;
+
+-- 数据排序
+select EmployeeID, Name, Salary From employee Order by salary asc;
+select EmployeeID, Name, Salary, Age From employee Order by salary desc, Age asc; #先排序salary, 然后再排AGE
+
+-- 限制行数
+select EmployeeID, Name, Salary, Age From employee Order by salary desc, Age asc Limit 10;
+-- 第一个数字:从某条数据开始,第二个数字表示展示多少行
+select EmployeeID, Name, Salary, Age From employee Order by salary desc, Age asc Limit 1, 10;
+
+-- 数据的去重
+select Name, Gender, Age From Employee;
+select distinct Gender From employee;
+select distinct Age From employee Order by Age;
+
+-- 比较运算符
+select* from employee where employeeID = 10;
+select* from employee where Age != 33;
+select* from employee where Age <> 33;
+
+-- 逻辑运算符
+ select* from employee where Age >= 30 And salary > 20000;
+
+--  范围查询(IN, Not In)( Between and)
+select* from employee where Age in(32, 33, 34);
+select* from employee where Age Not in(32, 33, 34);
+select* from employee where Age = 32 OR age= 33 or Age = 34;
+
+select* from employee where Age between 32 and 34;
+
+-- 空值查询(is null)
+select * from employee where JoinedAt is null;
+select * from employee where JoinedAt is not null;
+
+-- 模糊查询 % 任意多个字符,单个字符_
+select * from employee Where Name Like'杨%';
+select * from employee Where Name Like'杨_';
+select * from employee Where Name Like'%国%';
+select * from employee Where Name Like'__';
+
+-- 聚合函数
+-- 分组查询
+-- 统计各个岗位的平均薪资
+select JObposition,avg(salary) from employee where EmployeeID <= 10 GROUP BY JObposition;
+select JObposition,avg(age) from employee where EmployeeID <= 10 GROUP BY JObposition;
+
+-- where针对表数据进行过滤,having针对分组后的结果数据进行过滤;
+select Gender,count(*) from employee Group by Gender Having Gender = '男';
+select Gender,count(*) from employee where Gender = '男';
+
+-- 查询语句的执行顺序
+SELECT
+age, round(avg(salary),0) as avg_salary
+From employee
+Where JobPosition = '开发人员'
+Group by age
+having avg_salary >= 21000
+Order by Age DESC
+Limit 3;
+
+SELECT * From employee Where JobPosition = '开发人员';
+SELECT round(avg(salary),0) as avg_salary From employee Where JobPosition = '开发人员' Group by Age;
+SELECT round(avg(salary),0) as avg_salary From employee Where JobPosition = '开发人员' Group by Age having avg_salary >= 21000;
+SELECT age,round(avg(salary),0) as avg_salary From employee Where JobPosition = '开发人员' Group by Age having avg_salary >= 21000;
+SELECT age,round(avg(salary),0) as avg_salary From employee Where JobPosition = '开发人员' Group by Age having avg_salary >= 21000 Order by Age DESC;
+SELECT age,round(avg(salary),0) as avg_salary From employee Where JobPosition = '开发人员' Group by Age having avg_salary >= 21000 Order by Age DESC Limit 3;
+
+-- group_concat 函数
+SELECT Age,Group_concat(Name) From employee Where JobPosition = '开发人员' Group by Age;
+
+-- WITH ROLLUP
+select jobposition, Gender, count(*), sum(salary) From employee Group by JobPosition, Gender Order by Jobposition, Gender;
+select jobposition, count(*), sum(salary) From employee Group by JobPosition Order by Jobposition;
+select count(*), sum(salary) From employee;
+
+select jobposition, Gender, count(*), sum(salary) From employee Group by JobPosition, Gender with ROLLUP;
+
+-- 九、SQL常用函数
+
+-- abs 返回绝对值
+select abs(100);
+select abs(-100);
+select abs(salary - 25000) From Employee;
+-- pow 幂运算
+select pow(2,3); #二的3次方
+
+-- 判断正负数
+select sign(1);
+select sign (0);
+SELECT sign (-1);
+select Name,sign(salary - 25000) as sign from Employee order by sign desc;
+
+-- rand, 返回一个从0到1的随机值
+select rand();
+SELECT * From employee ORDER BY rand();
+
+-- ceil 大于等于指定值的最小整数值
+-- FLOOR(X)返回小于等于指定值的最小大整数值
+-- ROUND(X)返回指定小数点的四舍五入值
+-- TRUNCATE(X,D)返回指定小数点位数的截断值
+-- FORMAT(X,D)小数点后面保留多少位,前面的3位做一个分隔
+
+-- sql常用文本函数
+
+CREATE TABLE STRINGTEST (
+	ENNAME VARCHAR(50),
+	CHNAME VARCHAR(50)
+);
+
+INSERT INTO STRINGTEST VALUES
+('  Arnie  ', '  阿尼'),
+('   Kalyna   ', '  卡丽娜  '),
+('   Bennie  ', ' 本尼  '),
+('  Gaiane  ', '  盖恩 '),
+('   tomasz  ', ' 托马兹  ');
+
+select * from stringtest;
+
+-- ltrim, rtrim,trim 文本空格处理
+select enname, ltrim(enname) from stringtest;# 清除左侧空格
+select enname, rtrim(enname) from stringtest;# 清除右侧空格
+select enname, ltrim(rtrim(enname))from stringtest;# 同时清除左右两侧
+select enname, trim(enname)from stringtest;# 同时清除左右两侧
+
+-- 针对查询结果建表
+drop table stringtest2;
+
+create table stringtest2
+select trim(enname) as Enname,trim(chname) as Chname from stringtest;
+
+-- CONCAT(str1,str2,...) CONCAT_ws,文本连接
+select concat(trim(enname),'-',trim(chname)) from stringtest;
+
+-- replace 文本替换,区分大小写
+select Enname,Replace(Enname,'A','B') From stringtest2; #这里区分大小写
+
+-- left,right,substring 文本截取
+select Enname,Left(Enname,2),Right(Enname,2) From stringtest2;
+select Enname,substring(Enname,2,3) From stringtest2;#从2开始截取3个
+
+-- LENGTH(str)文本计数
+select enname,length(enname) From stringtest2;
+
+-- instr,文本查找
+select enname,instr(enname,'a') From stringtest2;#不在乎大小写
+
+-- 想提取包含字符右侧的文本内容
+-- 需要先定位a字符首次出现的位置
+select instr(enname,'a') from stringtest2;
+-- 然后截取a右侧的文本内容
+select enname,substring(enname,instr(enname,'a'),length(enname)-instr(enname,'a')+1) from stringtest2; #6-2+1
+
+-- upper,lower,文本
+select enname,upper(enname),lower(enname) from stringtest2;
+
+-- SQL常用日期时间函数
+-- 当前日期
+select curdate();
+select curtime();
+select now(); #当前日期和时间
+
+-- 获取年份,季度,月份,
+-- date、year,quarter,month,day,WEEKOFYEAR(date),
+select date(now());
+select year(NOW());
+select quarter(NOW());
+select month(now());
+select day(NOW());
+select WEEKOFYEAR(NOW());
+
+-- TIME、hour,minute,second
+select time(now());
+select hour(now());
+select minute(now());
+select second(now());
+
+-- extarct
+select extract(year from now());
+select extract(quarter from now());
+select extract(month from now());
+select extract(week from now());
+
+-- 日期和时间格式设置
+select now();
+select DATE_FORMAT(now(),'%Y年%m月%d日%m分%s秒');
+select DATE_FORMAT(now(),'%Y%m%d');
+select Name,JOinedAt,DATE_FORMAT(JoinedAt,'%Y年%m月%d日') From Employee;
+select Name,extract(year from JOinedAt) from employee;
+
+-- 日期计算,date_add,datediff
+select now(),DATE_ADD(now(),INTERVAL 3 year);
+select date(now()),date(DATE_ADD(now(),INTERVAL 3 year));
+select date(now()),date(DATE_ADD(now(),INTERVAL -3 day));
+
+select DATEDIFF('2022-8-11','2022-5-17');#左侧比右侧大
+
+-- SQL空值函数
+-- isnull,判断数据是否为空
+
+
+CREATE TABLE Products(
+	Pid INT PRIMARY KEY AUTO_INCREMENT,
+	ProductName VARCHAR(50) NOT NULL,
+	UnitPrice Decimal(10,2) NOT NULL,
+	UnitsInStock INT,
+	UnitsOnOrder INT
+);
+
+INSERT INTO Products VALUES
+(NULL, '苹果手机', 9800, 100, 20),
+(NULL, '华为手机', 8800, 200, 40),
+(NULL, '小米手机', 7000, 200, NULL);
+
+select productName,ISnull(UnitsInstock),Isnull(UnitsOnOrder) from products;
+
+-- if NULL 如果数据为空,返回替换值
+select productName,UnitPrice * (IFnull(UnitsInstock,0) + Ifnull(UnitsOnOrder,0)) from products;
+
+-- 数据类型转换cast 和 coalesce 函数返回数据列表中第一个非空的值
+desc employee;
+select Name,cast(JoinedAt as datetime) FRom Employee;
+select  concat(Name,'_',Salary) from employee;
+
+select  concat(Name,'_',cast(Salary as decimal(10,0))) from employee;
+select  concat(Name,'_',cast(Salary as char(5))) from employee;#采用固定长度:5位字符
+
+select coalesce(null,null,1);
+
+alter table Products add column Orderamount Decimal(10,2);
+UPDATE Products set Orderamount = UnitPrice * UnitsOnOrder where pid = 1;
+
+select ProductName, OrderAmount from Products;
+-- 有数据展示
+-- 如果为null,再次计算
+-- 如果还是null,给出提示,无法计算
+select ProductName, coalesce(OrderAmount,UnitPrice * UnitsOnOrder,'无法计算') from Products;
+
+-- if函数(条件,结果1,结果2)
+select if (5>2,1,2);
+-- 基于员工工资,划分等级,低于20000元,是低薪资级别,否则,设置为高薪资级别
+select * ,if (salary < 20000,'low','high') as SAL_Grade from employee;
