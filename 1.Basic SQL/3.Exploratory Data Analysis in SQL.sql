@@ -77,3 +77,19 @@ SELECT unanswered_count/question_count::numeric AS computed_pct,
  -- Select rows where question_count is not 0
  WHERE question_count is not null
  Limit 10;
+
+
+-- Compute standard deviation of maximum values
+SELECT stddev(maxval),
+	   -- min
+       min(maxval),
+       -- max
+       max(maxval),
+       -- avg
+       avg(maxval)
+  -- Subquery to compute max of question_count by tag
+  FROM (SELECT max(question_count) AS maxval
+          FROM stackoverflow
+         -- Compute max by...
+         GROUP BY tag) AS max_results; -- alias for subquery
+

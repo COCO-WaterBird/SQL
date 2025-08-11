@@ -1567,3 +1567,201 @@ where salary > (
 			AND Jobposition != 'CEO';
 
 -- 关联查询的类型-- cross JOIN
+-- Cross JOin
+-- 查询员工信息以及所在的部门名称 78
+select e.EmpName, d.DeptName
+From Employee AS e, Department as d;
+
+-- 什么是笛卡尔积?:每两个数据进行一个关联
+
+select e.EmpName, d.DeptName
+From Employee AS e cross JOIN Department as d;#78行数据
+
+select count(*) from Employee; #13
+select count(*) from Department; #6
+
+-- Inner Join 内连接:只展示交叉的部分
+select e.EmpName, d.DeptName
+From Employee AS e
+Inner JOIN Department as d
+On e.DeptID = d.DeptID; #值相等作为条件, 10条数据
+
+select e.*, d.DeptName # e的所有数据,也是只有10行
+From Employee AS e
+Inner JOIN Department as d
+On e.DeptID = d.DeptID; #值相等作为条件, 10条数据
+
+select e.*, d.DeptName # e的所有数据,也是只有10行
+From Employee AS e
+JOIN Department as d # Inner可以省略掉
+On e.DeptID = d.DeptID; #值相等作为条件, 10条数据
+
+select * from Employee; #有3行数据DeptID是null
+
+-- Left JOIN:DeptID即使匹配不上,也展示出来,即上面未能展示的3行数据, 右侧表:只展示与左侧交叉的信息, 也叫Left outer join
+select e.*, d.DeptName # e的所有数据,也是只有10行
+From Employee AS e
+Left JOIN Department as d
+On e.DeptID = d.DeptID;
+
+-- Right JOIN:右侧全部展示出来,财务部,行政部,人力部也展示,左侧只展示交叉部分, 也叫Right outer join
+select e.*, d.DeptName # e的所有数据,也是只有10行
+From Employee AS e
+Right JOIN Department as d
+On e.DeptID = d.DeptID;
+
+-- Full JOIN:全连接, Mysql没有这个功能
+select e.*, d.DeptName # e的所有数据,也是只有10行
+From Employee AS e
+Full JOIN Department as d
+On e.DeptID = d.DeptID;
+
+-- Union 3个数据全部合并到一起,并把重复的剔除掉
+(select e.*, d.DeptName # e的所有数据,也是只有10行
+From Employee AS e
+Inner JOIN Department as d
+On e.DeptID = d.DeptID)
+UNION
+(select e.*, d.DeptName # e的所有数据,也是只有10行
+From Employee AS e
+Left JOIN Department as d
+On e.DeptID = d.DeptID)
+UNION
+(select e.*, d.DeptName # e的所有数据,也是只有10行
+From Employee AS e
+Right JOIN Department as d
+On e.DeptID = d.DeptID)
+
+-- Natural Join 自然连接,等同于inner join, 他自己找相同字段部分
+select e.EmpName, d.DeptName
+From Employee AS e
+Natural JOIN Department as d;
+
+select e.EmpName, d.DeptName
+From Employee AS e
+Inner JOIN Department as d
+On e.DeptID = d.DeptID;
+
+alter table Department Rename Column DeptID to DID;
+-- 修改字段名后就会出现笛卡尔积
+select e.EmpName, d.DeptName
+From Employee AS e
+Natural JOIN Department as d;
+
+-- self join 自连接
+
+DROP TABLE IF EXISTS EmployeeVar;
+DROP TABLE IF EXISTS DepartmentVar;
+
+-- 部门表
+CREATE TABLE IF NOT EXISTS DepartmentVar (
+	DeptID INT PRIMARY KEY AUTO_INCREMENT,
+	DeptName VARCHAR(50) NOT NULL
+);
+
+INSERT INTO DepartmentVar(DeptName) VALUES('总部'),('开发部'),('咨询部'),('财务部'),('行政部'),('人力部');
+
+alter table Department Rename Column DID to DeptID;
+
+-- 员工表
+CREATE TABLE IF NOT EXISTS EmployeeVar (
+	EmpID INT PRIMARY KEY AUTO_INCREMENT,
+	EmpName VARCHAR(50) NOT NULL UNIQUE,
+	JobPosition ENUM('CEO','开发人员','顾问','经理','HR','会计','行政') NOT NULL,
+	Salary DECIMAL(10,2) NOT NULL,
+	DeptID INT,
+	ManagerID INT,
+	FOREIGN KEY(DeptID) REFERENCES Department(DeptID),
+	FOREIGN KEY(ManagerID) REFERENCES EmployeeVar(EmpID)
+);
+
+INSERT INTO EmployeeVar VALUES
+(NULL,'黄文隆','CEO',100000,1,NULL),
+(NULL,'张吉','经理',30000,2,1),
+(NULL,'谢彦','开发人员',15000,2,2),
+(NULL,'傅智翔','开发人员',12000,2,2),
+(NULL,'林玟','经理',35000,3,1),
+(NULL,'荣姿康','顾问',12000,3,5),
+(NULL,'林雅','经理',32500,3,1),
+(NULL,'雷进宝','顾问',12500,3,7),
+(NULL,'江奕','经理',31000,3,1),
+(NULL,'李雅惠','顾问',26000,3,9),
+(NULL,'吴佳瑞','HR',12000,NULL,NULL),
+(NULL,'周琼玟','会计',14000,NULL,NULL),
+(NULL,'黄文','行政',19000,NULL,NULL);
+
+
+
+
+	EmpID INT PRIMARY KEY AUTO_INCREMENT,
+	EmpName VARCHAR(50) NOT NULL UNIQUE,
+	JobPosition ENUM('CEO','开发人员','顾问','经理','HR','会计','行政') NOT NULL,
+	Salary DECIMAL(10,2) NOT NULL,
+	DeptID INT,
+	ManagerID INT,
+	FOREIGN KEY(DeptID) REFERENCES Department(DeptID),#外键 关联到Department(DeptID)
+	FOREIGN KEY(ManagerID) REFERENCES Manager(ManagerID)#外键 关联到Manager(ManagerID)
+
+INSERT INTO Employee VALUES
+(NULL,'黄文隆','CEO',100000,1,NULL),
+(NULL,'张吉','经理',30000,2,1),
+(NULL,'谢彦','开发人员',15000,2,2),
+(NULL,'傅智翔','开发人员',12000,2,2),
+(NULL,'林玟','经理',35000,3,1),
+(NULL,'荣姿康','顾问',12000,3,3),
+(NULL,'林雅','经理',32500,3,1),
+(NULL,'雷进宝','顾问',12500,3,4),
+(NULL,'江奕','经理',31000,3,1),
+(NULL,'李雅惠','顾问',26000,3,5),
+(NULL,'吴佳瑞','HR',12000,NULL,NULL),
+(NULL,'周琼玟','会计',14000,NULL,NULL),
+(NULL,'黄文','行政',19000,NULL,NULL);
+--
+
+-- self Join 自连接 查看员工的姓名以及上级的姓名
+select e1.EmpName as '员工姓名', e2.EmpName as '上级姓名'
+from employeeVAr AS e1
+Inner Join
+EmployeeVar AS e2
+On e1.ManagerID = e2.EmpID;
+
+-- 为什么要使用自查询
+-- 查询高于全体员工平均工资的员工信息
+-- SELECT * from Employee Where salary > '平均工资'
+-- 查询全体员工的平均工资
+-- 查询高于平均工资的员工
+
+select avg(salary) from employee where Jobposition != 'CEO';
+select * from employee where salary > 20916 AND Jobposition != 'CEO';
+
+select * from employee where salary > (
+select avg(salary) from employee where Jobposition != 'CEO') AND Jobposition != 'CEO';
+
+select *
+from employee
+where salary > (
+								select avg(salary) 单行单列的子查询
+								from employee
+								where Jobposition != 'CEO'
+								)
+			AND Jobposition != 'CEO';
+
+-- 子查询的类型
+
+作为单独一张表
+select avg(salary) 单行单列的子查询
+from employee
+where Jobposition != 'CEO'
+
+select *
+from employee as e
+Inner JOIN
+(
+	select avg(salary) as Avgsalary
+	from employee
+	where Jobposition != 'CEO'
+	) As TEMP
+On e.salary > temp.Avgsalary
+Where e.JobPosition != 'CEO';
+
+
