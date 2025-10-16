@@ -1765,3 +1765,19 @@ On e.salary > temp.Avgsalary
 Where e.JobPosition != 'CEO';
 
 
+-- 字符分开:从 Title 列里提取 冒号前 的部分（电影系列名）和 冒号后 的部分（子标题）。
+-- Title 字段 “Transformers: Age of Extinction” 里提取出
+SPLIT_PART(title, ':', 1) AS name,
+SPLIT_PART(title, ':', 2) AS series
+
+-- 日期转化
+TO_DATE(date, 'DD-MON-YYYY') AS date,
+-- 提取小时
+SELECT
+       EXTRACT(HOUR FROM Start_Time)::NUMERIC AS Start_Hour,
+       EXTRACT(HOUR FROM End_Time)::NUMERIC AS End_Hour
+FROM bike_trips;
+
+--Based on the exercise and your min/max values (2315 to 3072), you are asked to generate bins of size 50 using generate_series().
+SELECT generate_series(2200, 3100, 50) AS lower,
+       generate_series(2250, 3150, 50) AS upper;
