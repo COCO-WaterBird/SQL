@@ -1,7 +1,7 @@
-CREATE DATABASE SupplyChainDB_Group1;
+CREATE DATABASE SupplyChainDB_Group1_v4;
 GO
 
-USE SupplyChainDB_Group1;
+USE SupplyChainDB_Group1_v4;
 
 -- -- Create Tables
 -- -------------------------
@@ -146,29 +146,31 @@ CREATE TABLE dbo.OrderShipment (
 GO
 
 -- -------------------------
--- -- Invoice
--- -------------------------
-CREATE TABLE dbo.Invoice (
-    invoice_id   INT IDENTITY(1,1) PRIMARY KEY,
-    invoice_date DATE NOT NULL,
-    amount       DECIMAL(12,2) NOT NULL
-);
-GO
-
--- -------------------------
 -- -- Payments
 -- -------------------------
 CREATE TABLE dbo.Payments (
     payment_id   INT IDENTITY(1,1) PRIMARY KEY,
-    invoice_id   INT NULL,
     payment_date DATE NOT NULL,
     amount       DECIMAL(12,2) NOT NULL,
     method       NVARCHAR(50) NOT NULL,
-    type         NVARCHAR(50) NOT NULL,
-    CONSTRAINT FK_Payments_Invoice FOREIGN KEY (invoice_id)
-        REFERENCES dbo.Invoice(invoice_id)
+    type         NVARCHAR(50) NOT NULL
 );
 GO
+
+-- -------------------------
+-- -- Invoice
+-- -------------------------
+CREATE TABLE dbo.Invoice (
+    invoice_id   INT IDENTITY(1,1) PRIMARY KEY,
+    payment_id   INT NULL,  -- now references payment
+    invoice_date DATE NOT NULL,
+    amount       DECIMAL(12,2) NOT NULL,
+    CONSTRAINT FK_Invoice_Payment FOREIGN KEY (payment_id)
+        REFERENCES dbo.Payments(payment_id)
+);
+GO
+
+
 
 -- -------------------------
 -- -- OrderPayments (Order – Payments)
@@ -400,36 +402,38 @@ INSERT INTO dbo.OrderShipment (shipment_id, order_id) VALUES
 GO
 
 -- ------------------------------------------------------------
--- -- 12. Invoice  (10 rows)
+-- 13. Payments  (10 rows)
 -- ------------------------------------------------------------
-INSERT INTO dbo.Invoice (invoice_date, amount) VALUES
-('2025-01-05', 2350.00),
-('2025-01-06', 820.00),
-('2025-01-07', 460.00),
-('2025-01-08', 1850.00),
-('2025-01-09', 1420.00),
-('2025-01-10', 610.00),
-('2025-01-11', 970.00),
-('2025-01-12', 1520.00),
-('2025-01-13', 390.00),
-('2025-01-14', 780.00);
+INSERT INTO Payments (payment_date, amount, method, type) VALUES
+('2025-01-06', 2350.00, N'Credit Card', N'Full'),
+('2025-01-07', 820.00,  N'Wire',        N'Full'),
+('2025-01-08', 460.00,  N'Credit Card', N'Full'),
+('2025-01-09', 1850.00, N'ACH',         N'Full'),
+('2025-01-10', 700.00,  N'Credit Card', N'Partial'),
+('2025-01-11', 610.00,  N'Wire',        N'Full'),
+('2025-01-12', 970.00,  N'Credit Card', N'Full'),
+('2025-01-13', 1520.00, N'ACH',         N'Full'),
+('2025-01-14', 390.00,  N'Credit Card', N'Full'),
+('2025-01-15', 780.00,  N'Wire',        N'Full');
 GO
 
 -- ------------------------------------------------------------
--- -- 13. Payments  (10 rows)
+-- 12. Invoice  (10 rows)
 -- ------------------------------------------------------------
-INSERT INTO dbo.Payments (invoice_id, payment_date, amount, method, type) VALUES
-(1, '2025-01-06', 2350.00, N'Credit Card', N'Full'),
-(2, '2025-01-07', 820.00,  N'Wire',        N'Full'),
-(3, '2025-01-08', 460.00,  N'Credit Card', N'Full'),
-(4, '2025-01-09', 1850.00, N'ACH',         N'Full'),
-(5, '2025-01-10', 700.00,  N'Credit Card', N'Partial'),
-(6, '2025-01-11', 610.00,  N'Wire',        N'Full'),
-(7, '2025-01-12', 970.00,  N'Credit Card', N'Full'),
-(8, '2025-01-13', 1520.00, N'ACH',         N'Full'),
-(9, '2025-01-14', 390.00,  N'Credit Card', N'Full'),
-(10,'2025-01-15', 780.00,  N'Wire',        N'Full');
+INSERT INTO Invoice (payment_id, invoice_date, amount) VALUES
+(1, '2025-01-05', 2350.00),
+(2, '2025-01-06', 820.00),
+(3, '2025-01-07', 460.00),
+(4, '2025-01-08', 1850.00),
+(5, '2025-01-09', 1420.00),
+(6, '2025-01-10', 610.00),
+(7, '2025-01-11', 970.00),
+(8, '2025-01-12', 1520.00),
+(9, '2025-01-13', 390.00),
+(10,'2025-01-14', 780.00);
 GO
+
+
 
 -- ------------------------------------------------------------
 -- -- 14. OrderPayments  (10 rows)
